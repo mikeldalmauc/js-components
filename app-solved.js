@@ -235,7 +235,8 @@ let modelCards
 
 function initCards() {
     modelCards = {
-        cards: [
+          selectedEmoji : "None"
+        , cards: [
             {
                 image: "grumpy.jpg"
                 , title: "grrrrr"
@@ -279,15 +280,32 @@ function viewCards() {
     let cards = modelCards.cards.map(card => `
             <li class="card">
                 <div class="card-image"> 
-                    <div class="card-emoji" >&#${emoji(card.emoji)};</div>
+                    <div class="card-emoji" >${emojiCode(card.emoji)}</div>
                     <img src="assets/${card.image}">
                 </div>
                 <text class="card-text">${card.title}</text>
             </li>
-        `).join("")
+        `)
+        .filter(card => card.emoji != modelCards.selectedEmoji)
+        .join("")
+
+    let emojiButton = (emoji) => 
+        `<li>
+            <button 
+                type="button" 
+                onclick="updateCards('Filter','${emoji}')">
+                    <div class="emoji-icon ${emoji == modelCards.selectedEmoji ? "selected":""} selected">${emojiCode(emoji)}</div> 
+                    <div class="shadow"></div>
+                </button>
+           
+        </li>`
 
     app.innerHTML = `
         <h3>Cards</h3>
+        <ul class="emoji-menu">
+            ${modelCards.cards.map(card => emojiButton(card.emoji)).join("")}
+        </ul>
+        </br>
         <ul class="cards">
             ${cards}
         </ul>
@@ -295,11 +313,19 @@ function viewCards() {
     `
 }
 
-function updateCards(msg, idElemento) {
+function updateCards(msg, emoji) {
+    switch (msg) {
+        case "Filter":
+            modelCards.selectedEmoji = emoji
+            break
+        default:
+            break
+    }
 
+    viewCards()
 }
 
-function emoji(name) {
+function emojiCode(name) {
 
     let emoji
 
@@ -328,5 +354,5 @@ function emoji(name) {
             break
     }
 
-    return emoji;
+    return "&#"+emoji+";";
 }
