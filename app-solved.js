@@ -235,7 +235,7 @@ let modelCards
 
 function initCards() {
     modelCards = {
-          selectedEmoji : "None"
+          selectedEmojis : ["None"]
         , cards: [
             {
                 image: "grumpy.jpg"
@@ -276,8 +276,10 @@ function initCards() {
 
 function viewCards() {
     let app = document.getElementById("cardsApp")
-
-    let cards = modelCards.cards.map(card => `
+    
+    let cardsToShow = modelCards.cards
+        .filter(card => modelCards.selectedEmojis.includes('None') || modelCards.selectedEmojis.includes(card.emoji))
+        .map(card => `
             <li class="card">
                 <div class="card-image"> 
                     <div class="card-emoji" >${emojiCode(card.emoji)}</div>
@@ -286,10 +288,9 @@ function viewCards() {
                 <text class="card-text">${card.title}</text>
             </li>
         `)
-        .filter(card => card.emoji != modelCards.selectedEmoji)
         .join("")
 
-    let emojiButton = (emoji) => 
+    let viewEmojiButton = emoji => 
         `<li>
             <button 
                 type="button" 
@@ -303,11 +304,11 @@ function viewCards() {
     app.innerHTML = `
         <h3>Cards</h3>
         <ul class="emoji-menu">
-            ${modelCards.cards.map(card => emojiButton(card.emoji)).join("")}
+            ${modelCards.cards.map(card => viewEmojiButton(card.emoji)).join("")}
         </ul>
         </br>
         <ul class="cards">
-            ${cards}
+            ${cardsToShow}
         </ul>
 
     `
@@ -316,7 +317,12 @@ function viewCards() {
 function updateCards(msg, emoji) {
     switch (msg) {
         case "Filter":
-            modelCards.selectedEmoji = emoji
+
+            if(modelCards.selectedEmojis.includes(emoji))
+                modelCards.selectedEmojis = modelCards.selectedEmojis.filter(e => e !== emoji)
+            else
+                modelCards.selectedEmojis.push(emoji)
+
             break
         default:
             break
