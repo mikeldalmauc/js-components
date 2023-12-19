@@ -235,7 +235,7 @@ let modelCards
 
 function initCards() {
     modelCards = {
-          selectedEmojis : ["None"]
+          selectedEmojis : ["unamused", "grimace", "expresionless", "angry", "tongue", "relieved"]
         , cards: [
             {
                 image: "grumpy.jpg"
@@ -290,16 +290,18 @@ function viewCards() {
         `)
         .join("")
 
-    let viewEmojiButton = emoji => 
-        `<li>
-            <button 
-                type="button" 
-                onclick="updateCards('Filter','${emoji}')">
-                    <div class="emoji-icon ${emoji == modelCards.selectedEmoji ? "selected":""} selected">${emojiCode(emoji)}</div> 
-                    <div class="shadow"></div>
-                </button>
-           
-        </li>`
+    let viewEmojiButton = emoji => {
+            let selected = modelCards.selectedEmojis.includes(emoji) ? "selected":""
+            return `
+                <li>
+                    <button 
+                        type="button" 
+                        onclick="updateCards('Filter','${emoji}')">
+                            <div class="emoji-icon ${selected}">${emojiCode(emoji)}</div> 
+                            <div class="shadow ${selected}"></div>
+                    </button>
+                </li>`
+        }
 
     app.innerHTML = `
         <h3>Cards</h3>
@@ -322,7 +324,7 @@ function updateCards(msg, emoji) {
                 modelCards.selectedEmojis = modelCards.selectedEmojis.filter(e => e !== emoji)
             else
                 modelCards.selectedEmojis.push(emoji)
-
+            
             break
         default:
             break
