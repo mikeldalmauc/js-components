@@ -1,27 +1,66 @@
 /*
 Estilos generales
 */
+@font-face {
+    font-family: monacoBold;
+    src: url(assets/monaco.ttf);
+}
+@font-face {
+    font-family: monaco;
+    src: url(assets/monaco.ttf);
+    font-weight: bold;
+}
 
 body {
     margin: unset;
+    display: flex;
+    justify-content: center;
 }
 
+#gradient-1{
+    z-index: -1;
+    background-blend-mode: color-dodge;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(10deg, #e962e2, transparent);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#gradient-2{
+    z-index: -1;
+    background-blend-mode: color-dodge;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(121deg, #8ae88e, transparent);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+body * {
+    font-family: monaco;
+
+}
 .app-container {
     display: flex;
     flex-wrap: wrap;
+    max-width: 90%;
 }
 
 .app-container > app {
-    border-style: groove;
-    border-color: blueviolet;
+    border-style: inset;
+    border-color: rgba(172, 255, 47, 0.637);
     padding: 2%;
     background-color: rgb(230, 161, 226);
 }
 
 app > h3 {
     text-align: center;
+    font-family: monacoBold;
+    text-shadow: 0.06em 0em 0.061em greenyellow
 }
-
 
 /* 
     Estilos semaforo
@@ -121,7 +160,7 @@ app > h3 {
 */
 
 #cardsApp {
-    width: 30em;
+    width: 25em;
 }
 .cards {
     list-style: none;
@@ -135,7 +174,7 @@ app > h3 {
 }
 
 .card { 
-    width:  6em;
+    width: 6em;
     background-color: darkgrey;
     margin: 0.32em;
     padding: 0.4em;
@@ -173,6 +212,7 @@ app > h3 {
     position: absolute;
     font-size:  1.3em;
     z-index: 1;
+    text-shadow: 0.05em 0.01em 0.1em rgb(4, 59, 2);
 }
 
 .emoji-menu{
@@ -197,6 +237,10 @@ app > h3 {
     filter: grayscale()
 }
 
+.emoji-menu .emoji-icon.selected {
+    filter: unset;
+}
+
 .emoji-menu .emoji-icon:hover{
     transform: translateY(-0.1em);
 }
@@ -210,11 +254,26 @@ app > h3 {
     border-radius: 100%;
     filter: opacity(0.8);
     transform: translateY(0.1em);
-    background-color: black;
+    background-color: rgb(9, 17, 9);
     filter: opacity(0.8) blur(1.3px);
+    
 }
 
+.err {
+    position: relative;
+    padding-top: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    overflow: hidden;
+    width: 20em;
+}
 
-.emoji-menu .emoji-icon.selected {
-    filter: unset;
+#errors {
+    position: relative;
+    height: 1.6em;
+    width: 3em;
+    text-align: center;
+    font-size: xx-large;
+    margin-left: 35%;
 }

@@ -4,8 +4,30 @@ function init() {
     initLista();
     initSlider();
     initCards();
+    initErrors();
+
+    initGradients();
 }
 
+/**
+ * For the background
+ */
+function initGradients(){
+    let rot = 0;
+    let rot2 = 0;
+    let g1 = document.getElementById("gradient-1");
+    let g2 = document.getElementById("gradient-2");
+    let intervalId = setInterval(() => {
+        rot = rot + 1
+        rot2 = rot2 + 4
+        g1.style.filter = `hue-rotate(${rot}deg)`;
+        g2.style.filter = `hue-rotate(${rot2}deg)`;
+
+        g1.style.background = `background: linear-gradient(${10 + rot}deg, #e962e2, transparent)`;
+        g2.style.background = `linear-gradient(${121 + rot2}deg, #8ae88e, transparent)`;
+
+    }, 1000/10)
+}
 
 /* 
     Counter
@@ -114,8 +136,8 @@ function viewLista() {
     let app = document.getElementById("listaApp")
 
     let idElemento = 0
-    let lista = modelLista.map(elemento => `
-            <li class="elemento">
+    let lista = modelLista.map(elemento => 
+        `   <li class="elemento">
                 <button type="button" onclick="updateLista('Delete',${idElemento++})">X</button>
                 ${elemento}
             </li>
@@ -127,16 +149,16 @@ function viewLista() {
             type="text"
             id="nuevoElemento"
             name="nuevoElemento"
-            placeholder="Añademe a la lista!"
-            size="17"
+            placeholder="Gehitu nazazu zerrendara!"
+            size="24"
             >
         </input>
-        <button type="button" onclick="updateLista('Add')">Añadir</button>
+        <button type="button" onclick="updateLista('Add')">Gehitu</button>
         <ul class="lista">
             ${lista}
         </ul>
-
     `
+
 }
 
 function updateLista(msg, idElemento) {
@@ -164,7 +186,7 @@ let modelSlider
 
 function initSlider() {
     modelSlider = {
-        actual: "grumpy.jpg"
+          actual: "grumpy.jpg"
         , images: [
             "grumpy.jpg"
             , "chewy.jpg"
@@ -232,40 +254,39 @@ function updateSlider(msg) {
     Cards 
 */
 let modelCards
-
 function initCards() {
     modelCards = {
           selectedEmojis : ["unamused", "grimace", "expresionless", "angry", "tongue", "relieved"]
         , cards: [
             {
-                image: "grumpy.jpg"
-                , title: "grrrrr"
-                , emoji: "unamused"
+              image: "grumpy.jpg"
+            , title: "grrrrr"
+            , emoji: "unamused"
             }
             , {
-                image: "chewy.jpg"
-                , title: "Munching...."
-                , emoji: "grimace"
+              image: "chewy.jpg"
+            , title: "Munching...."
+            , emoji: "grimace"
             }
             , {
-                image: "thinkie.jpg"
-                , title: "thinkie thinking"
-                , emoji: "expresionless"
+              image: "thinkie.jpg"
+            , title: "thinkie thinking"
+            , emoji: "expresionless"
             }
             , {
-                image: "meany.jpg"
-                , title: "meany is angry!"
-                , emoji: "angry"
+              image: "meany.jpg"
+            , title: "meany is angry!"
+            , emoji: "angry"
             }
             , {
-                image: "brokie.jpg"
-                , title: "whuuuu"
-                , emoji: "tongue"
+              image: "brokie.jpg"
+            , title: "whuuuu"
+            , emoji: "tongue"
             }
             , {
-                image: "pawsofjoy.jpg"
-                , title: "..."
-                , emoji: "relieved"
+              image: "pawsofjoy.jpg"
+            , title: "..."
+            , emoji: "relieved"
             }
         ]
         ,
@@ -277,8 +298,8 @@ function initCards() {
 function viewCards() {
     let app = document.getElementById("cardsApp")
     
-    let cardsToShow = modelCards.cards
-        .filter(card => modelCards.selectedEmojis.includes('None') || modelCards.selectedEmojis.includes(card.emoji))
+    let viewCards = cards => 
+        cards
         .map(card => `
             <li class="card">
                 <div class="card-image"> 
@@ -289,6 +310,24 @@ function viewCards() {
             </li>
         `)
         .join("")
+    
+    // Emoji menua, 
+    // carta guztien artean daduen emoji desberdinak erakutziko ditu
+
+    let viewEmojiMenu = cards =>        // Karta zerrenda jasotzen dugu sarrera bezela
+        cards
+        .map(card => card.emoji)        // Zerrenda karata bakoitzaren emojien zerrendan bihurtzen du 
+                                        // [carta1, carta2, ...] => ["emoji1", "emoji2", ..]
+
+        .reduce((prev, curr) => {       // errepikatutako emojiak filtratu. ulertu reduce funtzioa
+            if(!prev.includes(curr))
+                prev.push(curr)
+
+            return prev
+        } , [])
+        .map(emoji => viewEmojiButton(emoji)) // Akenink, htmla sortzen dugu
+        .join("")                              // zerrandako valiu guztiak gehitu banatzailerik gabe
+        
 
     let viewEmojiButton = emoji => {
             let selected = modelCards.selectedEmojis.includes(emoji) ? "selected":""
@@ -303,23 +342,26 @@ function viewCards() {
                 </li>`
         }
 
+
     app.innerHTML = `
         <h3>Cards</h3>
         <ul class="emoji-menu">
-            ${modelCards.cards.map(card => viewEmojiButton(card.emoji)).join("")}
+            ${viewEmojiMenu(modelCards.cards)}
         </ul>
         </br>
         <ul class="cards">
-            ${cardsToShow}
+            ${viewCards(modelCards.cards.filter(card => modelCards.selectedEmojis.includes(card.emoji)))}
         </ul>
 
     `
 }
 
+
+
+
 function updateCards(msg, emoji) {
     switch (msg) {
         case "Filter":
-
             if(modelCards.selectedEmojis.includes(emoji))
                 modelCards.selectedEmojis = modelCards.selectedEmojis.filter(e => e !== emoji)
             else
@@ -336,7 +378,6 @@ function updateCards(msg, emoji) {
 function emojiCode(name) {
 
     let emoji
-
     switch (name) {
         case "angry":
             emoji = "128544"
@@ -356,11 +397,61 @@ function emojiCode(name) {
         case "relieved":
             emoji = "128524"
             break
-
         default:
             emoji = "128534"
             break
     }
 
     return "&#"+emoji+";";
+}
+
+
+
+
+/*
+    Errors 
+*/
+
+let modelErrors
+
+function initErrors() {
+    modelErrors = {
+        errorCodes:[
+            100, 101, 102, 103,
+            200, 201, 202, 203, 204, 205, 206, 207, 208, 226,
+            300, 301, 302, 303, 304, 305, 307, 308,
+            400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 421, 422, 423, 424, 426, 428, 429, 431, 451,
+            500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511.
+        ]  
+        , selected:100
+    }
+    viewErrors()
+}
+
+function viewErrors() {
+    
+    let app = document.getElementById("errorsApp")
+
+    app.innerHTML = `
+        <h3>HTTP protocoloaren erroreak</h3>
+        <div class="err" style="background-image: url(https://http.cat/${modelErrors.selected})">
+        </div>
+        <select id="errors" name="errors" onchange="updateErrors('Error')">
+            ${modelErrors.errorCodes.map(error => `<option ${error==modelErrors.selected ? "selected":""} value="${error}">${error}</option>`).join("")}
+        </select>
+    `
+}
+
+function updateErrors(msg) {
+
+    switch (msg) {
+
+        case "Error":
+            modelErrors.selected = document.getElementById("errors").value;
+            break
+        default:
+            break
+    }
+
+    viewErrors()
 }
