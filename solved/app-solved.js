@@ -455,3 +455,9 @@ function updateErrors(msg) {
 
     viewErrors()
 }
+
+
+
+/*
+    Errors 
+*/
